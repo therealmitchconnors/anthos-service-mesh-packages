@@ -2,14 +2,61 @@ apiVersion: kpt.dev/v1alpha1
 kind: Kptfile
 metadata:
   name: asm
+upstream:
+  type: git
+  git:
+    commit: ca7771cce704a9f9e031ea8189b9d3501b7e8fed
+    repo: https://github.com/GoogleCloudPlatform/anthos-service-mesh-packages
+    directory: /asm-iap
+    ref: release-1.6-asm
 openAPI:
   definitions:
+    io.k8s.cli.setters.anthos.servicemesh.canonicalServiceHub:
+      x-k8s-cli:
+        setter:
+          isSet: true
+          name: anthos.servicemesh.canonicalServiceHub
+          value: gcr.io/gke-release/asm/canonical-service-controller:1.6.11-asm.1
+    io.k8s.cli.setters.anthos.servicemesh.controlplane.monitoring.enabled:
+      type: string
+      x-k8s-cli:
+        setter:
+          name: anthos.servicemesh.controlplane.monitoring.enabled
+          value: "true"
+    io.k8s.cli.setters.anthos.servicemesh.hub:
+      x-k8s-cli:
+        setter:
+          name: anthos.servicemesh.hub
+          value: gcr.io/gke-release/asm
+    io.k8s.cli.setters.anthos.servicemesh.profile:
+      x-k8s-cli:
+        setter:
+          name: anthos.servicemesh.profile
+          value: asm-gcp
+          isSet: true
+    io.k8s.cli.setters.anthos.servicemesh.tag:
+      x-k8s-cli:
+        setter:
+          isSet: true
+          name: anthos.servicemesh.tag
+          value: 1.6.11-asm.1
+    io.k8s.cli.setters.anthos.servicemesh.trustDomainAliases:
+      items:
+        pattern: '[a-z0-9\-].svc.id.goog'
+        type: string
+      minItems: 1
+      type: array
+      x-k8s-cli:
+        setter:
+          listValues: null
+          name: anthos.servicemesh.trustDomainAliases
     io.k8s.cli.setters.gcloud.compute.location:
       type: string
       x-k8s-cli:
         setter:
           name: gcloud.compute.location
           value: us-central1-c
+          isSet: true
     io.k8s.cli.setters.gcloud.compute.network:
       type: string
       x-k8s-cli:
@@ -22,17 +69,32 @@ openAPI:
         setter:
           name: gcloud.compute.subnetwork
           value: default
+    io.k8s.cli.setters.gcloud.container.cluster.ingress.httpPort:
+      type: integer
+      x-k8s-cli:
+        setter:
+          name: gcloud.container.cluster.ingress.httpPort
+          value: 31224
+          isSet: true
+    io.k8s.cli.setters.gcloud.container.cluster.ingress.statusPort:
+      type: integer
+      x-k8s-cli:
+        setter:
+          name: gcloud.container.cluster.ingress.statusPort
+          value: 31223
+          isSet: true
+    io.k8s.cli.setters.gcloud.container.cluster:
+      type: string
+      x-k8s-cli:
+        setter:
+          name: gcloud.container.cluster
+          value: cluster-15
+          isSet: true
     io.k8s.cli.setters.gcloud.container.cluster.clusterSecondaryRange:
       type: string
       x-k8s-cli:
         setter:
           name: gcloud.container.cluster.clusterSecondaryRange
-          value: ""
-    io.k8s.cli.setters.gcloud.container.cluster.servicesSecondaryRange:
-      type: string
-      x-k8s-cli:
-        setter:
-          name: gcloud.container.cluster.servicesSecondaryRange
           value: ""
     io.k8s.cli.setters.gcloud.container.cluster.releaseChannel:
       type: string
@@ -40,22 +102,12 @@ openAPI:
         setter:
           name: gcloud.container.cluster.releaseChannel
           value: REGULAR
-    io.k8s.cli.setters.anthos.servicemesh.trustDomainAliases:
-      items:
-        pattern: '[a-z0-9\-].svc.id.goog'
-        type: string
-      minItems: 1
-      type: array
-      x-k8s-cli:
-        setter:
-          name: anthos.servicemesh.trustDomainAliases
-          listValues:
-    io.k8s.cli.setters.gcloud.container.cluster:
+    io.k8s.cli.setters.gcloud.container.cluster.servicesSecondaryRange:
       type: string
       x-k8s-cli:
         setter:
-          name: gcloud.container.cluster
-          value: asm-cluster
+          name: gcloud.container.cluster.servicesSecondaryRange
+          value: ""
     io.k8s.cli.setters.gcloud.container.nodepool.max-nodes:
       x-k8s-cli:
         setter:
@@ -66,51 +118,54 @@ openAPI:
       x-k8s-cli:
         setter:
           name: gcloud.core.project
-          value: PROJECT_ID
-    io.k8s.cli.setters.gcloud.project.projectNumber:
-      type: string
-      x-k8s-cli:
-        setter:
-          name: gcloud.project.projectNumber
-          value: PROJECT_NUMBER
+          value: mitch-csm-6
+          isSet: true
     io.k8s.cli.setters.gcloud.project.environProjectNumber:
       type: string
       x-k8s-cli:
         setter:
           name: gcloud.project.environProjectNumber
-          value: PROJECT_NUMBER
-    io.k8s.cli.setters.anthos.servicemesh.hub:
-      x-k8s-cli:
-        setter:
-          name: anthos.servicemesh.hub
-          value: gcr.io/gke-release/asm
-    io.k8s.cli.setters.anthos.servicemesh.tag:
-      x-k8s-cli:
-        setter:
-          name: anthos.servicemesh.tag
-          value: 1.6.11-asm.1
+          value: "322150793075"
           isSet: true
-    io.k8s.cli.setters.anthos.servicemesh.canonicalServiceHub:
+    io.k8s.cli.setters.gcloud.project.projectNumber:
+      type: string
       x-k8s-cli:
         setter:
-          name: anthos.servicemesh.canonicalServiceHub
-          value: gcr.io/gke-release/asm/canonical-service-controller:1.6.11-asm.1
+          name: gcloud.project.projectNumber
+          value: "582262081857"
           isSet: true
-    io.k8s.cli.substitutions.mesh-id:
+    io.k8s.cli.substitutions.cluster-name:
       type: string
       x-k8s-cli:
         substitution:
-          name: mesh-id
-          pattern: "proj-PROJECT_NUMBER"
+          name: cluster-name
+          pattern: PROJECT_ID/us-central1-c/asm-cluster
           values:
-          - marker: PROJECT_NUMBER
-            ref: '#/definitions/io.k8s.cli.setters.gcloud.project.environProjectNumber'
+          - marker: PROJECT_ID
+            ref: '#/definitions/io.k8s.cli.setters.gcloud.core.project'
+          - marker: us-central1-c
+            ref: '#/definitions/io.k8s.cli.setters.gcloud.compute.location'
+          - marker: asm-cluster
+            ref: '#/definitions/io.k8s.cli.setters.gcloud.container.cluster'
+    io.k8s.cli.substitutions.gke-cluster-url:
+      type: string
+      x-k8s-cli:
+        substitution:
+          name: gke-cluster-url
+          pattern: https://container.googleapis.com/v1/projects/PROJECT_ID/locations/us-central1-c/clusters/asm-cluster
+          values:
+          - marker: PROJECT_ID
+            ref: '#/definitions/io.k8s.cli.setters.gcloud.core.project'
+          - marker: asm-cluster
+            ref: '#/definitions/io.k8s.cli.setters.gcloud.container.cluster'
+          - marker: us-central1-c
+            ref: '#/definitions/io.k8s.cli.setters.gcloud.compute.location'
     io.k8s.cli.substitutions.gke-metadata:
       type: string
       x-k8s-cli:
         substitution:
           name: gke-metadata
-          pattern: "PROJECT_ID|PROJECT_NUMBER|asm-cluster|us-central1-c"
+          pattern: PROJECT_ID|PROJECT_NUMBER|asm-cluster|us-central1-c
           values:
           - marker: PROJECT_ID
             ref: '#/definitions/io.k8s.cli.setters.gcloud.core.project'
@@ -120,46 +175,27 @@ openAPI:
             ref: '#/definitions/io.k8s.cli.setters.gcloud.container.cluster'
           - marker: us-central1-c
             ref: '#/definitions/io.k8s.cli.setters.gcloud.compute.location'
-    io.k8s.cli.substitutions.trust-domain:
-      type: string
+    io.k8s.cli.substitutions.gkeio-cluster:
       x-k8s-cli:
         substitution:
-          name: trust-domain
-          pattern: "PROJECT_ID.svc.id.goog"
+          name: gkeio-cluster
+          pattern: gke://PROJECT_ID/us-central1-c/asm-cluster
           values:
-          - marker: PROJECT_ID
-            ref: '#/definitions/io.k8s.cli.setters.gcloud.core.project'
-    io.k8s.cli.substitutions.gke-cluster-url:
-      type: string
-      x-k8s-cli:
-        substitution:
-          name: gke-cluster-url
-          pattern: "https://container.googleapis.com/v1/projects/PROJECT_ID/locations/us-central1-c/clusters/asm-cluster"
-          values:
-          - marker: PROJECT_ID
-            ref: '#/definitions/io.k8s.cli.setters.gcloud.core.project'
           - marker: asm-cluster
             ref: '#/definitions/io.k8s.cli.setters.gcloud.container.cluster'
           - marker: us-central1-c
             ref: '#/definitions/io.k8s.cli.setters.gcloud.compute.location'
-    io.k8s.cli.substitutions.cluster-name:
+          - marker: PROJECT_ID
+            ref: '#/definitions/io.k8s.cli.setters.gcloud.core.project'
+    io.k8s.cli.substitutions.mesh-id:
       type: string
       x-k8s-cli:
         substitution:
-          name: cluster-name
-          pattern: "PROJECT_ID/us-central1-c/asm-cluster"
+          name: mesh-id
+          pattern: proj-PROJECT_NUMBER
           values:
-          - marker: PROJECT_ID
-            ref: '#/definitions/io.k8s.cli.setters.gcloud.core.project'
-          - marker: us-central1-c
-            ref: '#/definitions/io.k8s.cli.setters.gcloud.compute.location'
-          - marker: asm-cluster
-            ref: '#/definitions/io.k8s.cli.setters.gcloud.container.cluster'
-    io.k8s.cli.setters.anthos.servicemesh.profile:
-      x-k8s-cli:
-        setter:
-          name: anthos.servicemesh.profile
-          value: asm-gcp
+          - marker: PROJECT_NUMBER
+            ref: '#/definitions/io.k8s.cli.setters.gcloud.project.environProjectNumber'
     io.k8s.cli.substitutions.spiffe-bundle-endpoints:
       x-k8s-cli:
         substitution:
@@ -168,21 +204,12 @@ openAPI:
           values:
           - marker: PROJECT_ID
             ref: '#/definitions/io.k8s.cli.setters.gcloud.core.project'
-    io.k8s.cli.setters.anthos.servicemesh.controlplane.monitoring.enabled:
+    io.k8s.cli.substitutions.trust-domain:
       type: string
       x-k8s-cli:
-        setter:
-          name: anthos.servicemesh.controlplane.monitoring.enabled
-          value: "true"
-    io.k8s.cli.substitutions.gkeio-cluster:
-      x-k8s-cli:
         substitution:
-          name: gkeio-cluster
-          pattern: "gke://PROJECT_ID/us-central1-c/asm-cluster"
+          name: trust-domain
+          pattern: PROJECT_ID.svc.id.goog
           values:
-          - marker: asm-cluster
-            ref: '#/definitions/io.k8s.cli.setters.gcloud.container.cluster'
-          - marker: us-central1-c
-            ref: '#/definitions/io.k8s.cli.setters.gcloud.compute.location'
           - marker: PROJECT_ID
             ref: '#/definitions/io.k8s.cli.setters.gcloud.core.project'
